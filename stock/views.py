@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from stock.models import Insumo, Productos
+from stock.models import Insumo, Productos, Atencion
 from django.template import loader
 from django.http import HttpResponse
-from stock.forms import InsumoFormulario
+from stock.forms import InsumoFormulario, AtencionFormulario
 
 
 # Create your views here.
@@ -19,6 +19,7 @@ def crear_insumo(request):
     
     return HttpResponse(doc)
 
+#-----------------------------------------------------------------------------------------------------------
 def crear_producto(request): 
     
     print("mostrar request.py:")
@@ -35,6 +36,7 @@ def crear_producto(request):
         
     return render(request, 'producto_formulario.html')
 
+#------------------------------------------------------------------------------------------------------------------
 def crear_insumo(request): 
     
     if request.method == "POST": 
@@ -55,5 +57,25 @@ def crear_insumo(request):
     else:
         nuevo_formulario = InsumoFormulario()
         return render(request, 'insumo_formulario.html', {"formulario": nuevo_formulario})
-
-   
+    
+#--------------------------------------------------------------------------------------------------------------------------
+def atencion_al_cliente(request): 
+    
+    if request.method == "POST": 
+        nueva_solicitud = AtencionFormulario(request.POST)
+        
+        if nueva_solicitud.is_valid(): 
+            informacion = nueva_solicitud.cleaned_data 
+            nueva_solicitud = Atencion(
+                nombre=informacion["nombre"], 
+                descripcion_del_problema=informacion["descripcion_del_problema"], 
+            )
+            
+            nueva_solicitud.save()
+            return render(request, 'index.html')
+        else: 
+            return render(request, 'atencion_al_cliente.html', {"solicitud": nueva_solicitud})
+    else:
+        nueva_solicitud = AtencionFormulario()
+        return render(request, 'atencion_al_cliente.html', {"solicitud": nueva_solicitud})
+    

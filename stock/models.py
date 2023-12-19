@@ -15,3 +15,7 @@ class Productos(models.Model):
     descripcion = models.TextField()
     cantidad_en_stock = models.IntegerField()
     
+    
+class Atencion(models.Model):
+    nombre = models.CharField(max_length=50)
+    descripcion_del_problema = models.TextField()
